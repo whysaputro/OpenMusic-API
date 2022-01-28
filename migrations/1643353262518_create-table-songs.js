@@ -8,15 +8,19 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
+    title: {
+      type: 'VARCHAR(100)',
+      notNull: true,
+    },
     year: {
       type: 'SMALLINT',
       notNull: true,
     },
-    genre: {
+    performer: {
       type: 'VARCHAR(100)',
       notNull: true,
     },
-    performer: {
+    genre: {
       type: 'VARCHAR(100)',
       notNull: true,
     },
@@ -24,7 +28,7 @@ exports.up = (pgm) => {
       type: 'SMALLINT',
       notNull: false,
     },
-    albumId: {
+    album_id: {
       type: 'VARCHAR(50)',
       notNull: false,
     },
