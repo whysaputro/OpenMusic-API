@@ -1,8 +1,9 @@
 const ClientError = require('../../exceptions/ClientError');
 
 class AlbumsHandler {
-  constructor(service) {
+  constructor(service, validator) {
     this._service = service;
+    this._validator = validator;
 
     this.postAlbumHandler = this.postAlbumHandler.bind(this);
     this.getAlbumByIdHandler = this.getAlbumByIdHandler.bind(this);
@@ -12,6 +13,8 @@ class AlbumsHandler {
 
   async postAlbumHandler(request, h) {
     try {
+      this._validator.validateAlbumPayload(request.payload);
+
       const { name, year } = request.payload;
 
       const albumId = await this._service.addAlbum({ name, year });
@@ -38,7 +41,7 @@ class AlbumsHandler {
 
       const response = h.response({
         status: 'fail',
-        message: 'Terjadi kesalahan pada server',
+        message: 'Terjadi kegagalan pada server',
       });
 
       response.code(500);
@@ -69,7 +72,7 @@ class AlbumsHandler {
 
       const response = h.response({
         status: 'fail',
-        message: 'Terjadi kesalahan pada server',
+        message: 'Terjadi kegagalan pada server',
       });
 
       response.code(500);
@@ -79,6 +82,7 @@ class AlbumsHandler {
 
   async putAlbumByIdHandler(request, h) {
     try {
+      this._validator.validateAlbumPayload(request.payload);
       const { id } = request.params;
       const { name, year } = request.payload;
       await this._service.editAlbumById(id, { name, year });
@@ -100,7 +104,7 @@ class AlbumsHandler {
 
       const response = h.response({
         status: 'fail',
-        message: 'Terjadi kesalahan pada server',
+        message: 'Terjadi kegagalan pada server',
       });
 
       response.code(500);
@@ -121,7 +125,7 @@ class AlbumsHandler {
       if (error instanceof ClientError) {
         const response = h.response({
           status: 'fail',
-          message: error.statusCode,
+          message: `${error.statusCode}`,
         });
 
         response.code(error.statusCode);
@@ -130,7 +134,7 @@ class AlbumsHandler {
 
       const response = h.response({
         status: 'fail',
-        message: 'Terjadi kesalahan pada server',
+        message: 'Terjadi kegagalan pada server',
       });
 
       response.code(500);
