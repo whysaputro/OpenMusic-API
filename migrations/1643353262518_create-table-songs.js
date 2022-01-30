@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
 
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
   pgm.createTable('songs', {
     id: {
@@ -35,10 +33,12 @@ exports.up = (pgm) => {
     created_at: {
       type: 'TEXT',
       notNull: true,
+      default: pgm.func('current_timestamp'),
     },
     updated_at: {
       type: 'TEXT',
       notNull: true,
+      default: pgm.func('current_timestamp'),
     },
   });
 };
