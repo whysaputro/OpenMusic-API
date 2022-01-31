@@ -3,17 +3,25 @@ require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 const ClientError = require('./exceptions/ClientError');
 
+// ALBUM PLUGIN
 const albums = require('./api/albums');
-const AlbumService = require('./services/postgres/AlbumService');
-const AlbumValidator = require('./validator/album');
+const AlbumsService = require('./services/postgres/AlbumsService');
+const AlbumPayloadValidator = require('./validator/album');
 
+// SONG PLUGIN
 const songs = require('./api/songs');
-const SongService = require('./services/postgres/SongService');
-const SongValidator = require('./validator/song');
+const SongsService = require('./services/postgres/SongsService');
+const SongPayloadValidator = require('./validator/song');
+
+// USER PLUGIN
+const users = require('./api/users');
+const UsersService = require('./services/postgres/UsersService');
+const UserPayloadValidator = require('./validator/user');
 
 const init = async () => {
-  const albumService = new AlbumService();
-  const songService = new SongService();
+  const albumsService = new AlbumsService();
+  const songsService = new SongsService();
+  const usersService = new UsersService();
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -29,15 +37,22 @@ const init = async () => {
     {
       plugin: albums,
       options: {
-        service: { albumService, songService },
-        validator: AlbumValidator,
+        service: { albumsService, songsService },
+        validator: AlbumPayloadValidator,
       },
     },
     {
       plugin: songs,
       options: {
-        service: songService,
-        validator: SongValidator,
+        service: songsService,
+        validator: SongPayloadValidator,
+      },
+    },
+    {
+      plugin: users,
+      options: {
+        service: usersService,
+        validator: UserPayloadValidator,
       },
     },
   ]);
@@ -74,7 +89,14 @@ const init = async () => {
   });
 
   await server.start();
-  console.log(`Server started on ${server.info.uri}`);
+
+  console.log(`
+  ██████  ██████  ███████ ███    ██     ███    ███ ██    ██ ███████ ██  ██████ 
+ ██    ██ ██   ██ ██      ████   ██     ████  ████ ██    ██ ██      ██ ██      
+ ██    ██ ██████  █████   ██ ██  ██     ██ ████ ██ ██    ██ ███████ ██ ██      
+ ██    ██ ██      ██      ██  ██ ██     ██  ██  ██ ██    ██      ██ ██ ██      
+  ██████  ██      ███████ ██   ████     ██      ██  ██████  ███████ ██  ██████ Version 2.0 `);
+  console.log(`\n Server started on ${server.info.uri}`);
 };
 
 init();
