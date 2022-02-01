@@ -16,7 +16,7 @@ class PlaylistSongActivitiesService {
       values: [id, playlistId, songId, userId, action, time],
     };
 
-    const result = this._pool.query(query);
+    const result = await this._pool.query(query);
     if (!result.rowCount) {
       throw new InvariantError('Gagal mencatat aktifitas');
     }
