@@ -2,7 +2,7 @@ const routes = require('./routes');
 const AuthenticationsHandler = require('./handler');
 
 module.exports = {
-  name: 'authentications',
+  name: 'API For JWT Authentications',
   version: '1.0.0',
   register: async (server, { service, validator, tokenManager }) => {
     const authenticationsHandler = new AuthenticationsHandler(service, validator, tokenManager);

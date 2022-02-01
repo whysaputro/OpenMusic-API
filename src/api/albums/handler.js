@@ -18,7 +18,7 @@ class AlbumsHandler {
 
       const { name, year } = request.payload;
 
-      const albumId = await this._albumService.addAlbum({ name, year });
+      const albumId = await this._albumService.addAlbum(name, year);
 
       const response = h.response({
         status: 'success',
@@ -34,11 +34,12 @@ class AlbumsHandler {
     }
   }
 
-  async getAlbumByIdHandler(request) {
+  // eslint-disable-next-line no-unused-vars
+  async getAlbumByIdHandler(request, _) {
     try {
-      const { id } = request.params;
-      const album = await this._albumService.getAlbumById(id);
-      const songs = await this._songService.getSongByAlbumId(id);
+      const { id: albumId } = request.params;
+      const album = await this._albumService.getAlbumById(albumId);
+      const songs = await this._songService.getSongByAlbumId(albumId);
 
       return {
         status: 'success',
@@ -51,12 +52,13 @@ class AlbumsHandler {
     }
   }
 
-  async putAlbumByIdHandler(request) {
+  // eslint-disable-next-line no-unused-vars
+  async putAlbumByIdHandler(request, _) {
     try {
       this._validator.validateAlbumPayload(request.payload);
-      const { id } = request.params;
+      const { id: albumId } = request.params;
       const { name, year } = request.payload;
-      await this._albumService.editAlbumById(id, { name, year });
+      await this._albumService.editAlbumById(albumId, name, year);
 
       return {
         status: 'success',
@@ -67,10 +69,11 @@ class AlbumsHandler {
     }
   }
 
-  async deleteAlbumByIdHandler(request) {
+  // eslint-disable-next-line no-unused-vars
+  async deleteAlbumByIdHandler(request, _) {
     try {
-      const { id } = request.params;
-      await this._albumService.deleteAlbumById(id);
+      const { id: albumId } = request.params;
+      await this._albumService.deleteAlbumById(albumId);
 
       return {
         status: 'success',

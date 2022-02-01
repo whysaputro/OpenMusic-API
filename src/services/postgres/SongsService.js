@@ -33,10 +33,10 @@ class SongsService {
     return rows;
   }
 
-  async getSongById(id) {
+  async getSongById(songId) {
     const query = {
       text: 'SELECT id, title, year, performer, genre, duration, album_id FROM songs WHERE id = $1',
-      values: [id],
+      values: [songId],
     };
 
     const result = await this._pool.query(query);
@@ -57,30 +57,43 @@ class SongsService {
     return result.rows;
   }
 
-  async editSongById(id, {
+  async editSongById(songId, {
     title, year, performer, genre, duration, albumId,
   }) {
     const updatedAt = new Date().toISOString();
     const query = {
       text: 'UPDATE songs SET title = $1, year = $2, performer = $3, genre = $4, duration = $5, album_id = $6, updated_at = $7 WHERE id = $8 RETURNING id',
-      values: [title, year, performer, genre, duration, albumId, updatedAt, id],
+      values: [title, year, performer, genre, duration, albumId, updatedAt, songId],
     };
 
     const result = await this._pool.query(query);
     if (!result.rows.length) {
-      throw new NotFoundError('Gagal memperbarui lagu, id lagu tidak ditemukan');
+      throw new NotFoundError('Gagal memperbarui lagu, id tidak ditemukan');
     }
   }
 
-  async deleteSongById(id) {
+  async deleteSongById(songId) {
     const query = {
       text: 'DELETE FROM songs WHERE id = $1 RETURNING id',
-      values: [id],
+      values: [songId],
     };
 
     const result = await this._pool.query(query);
     if (!result.rows.length) {
-      throw new NotFoundError('Gagal menghapus lagu, id lagu tidak ditemukan');
+      throw new NotFoundError('Gagal menghapus lagu, id tidak ditemukan');
+    }
+  }
+
+  async verifySongIsExist(songId) {
+    const query = {
+      text: 'SELECT * FROM songs WHERE id = $1',
+      values: [songId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Lagu tidak ditemukan');
     }
   }
 }

@@ -2,37 +2,39 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
-const ClientError = require('./exceptions/ClientError');
 
-/* ALBUM PLUGIN */
+/* ERROR HANDLER */
+const errors = require('./api/errors');
+
+/* ALBUMS */
 const albums = require('./api/albums');
 const AlbumsService = require('./services/postgres/AlbumsService');
 const AlbumValidator = require('./validator/album');
 
-/* SONG PLUGIN */
+/* SONGS */
 const songs = require('./api/songs');
 const SongsService = require('./services/postgres/SongsService');
 const SongValidator = require('./validator/song');
 
-/* USER PLUGIN */
+/* USERS */
 const users = require('./api/users');
 const UsersService = require('./services/postgres/UsersService');
 const UserValidator = require('./validator/user');
 
-/* AUTHENTICATION PLUGIN */
+/* AUTHENTICATIONS */
 const authentications = require('./api/authentications');
 const AuthenticationsService = require('./services/postgres/AuthenticationsService');
 const AuthenticationValidator = require('./validator/authentication');
 const TokenManager = require('./tokenize/TokenManager');
 
-/* PLAYLIST PLUGIN */
+/* PLAYLISTS */
 const playlists = require('./api/playlists');
 const PlaylistsService = require('./services/postgres/PlaylistsService');
 const PlaylistSongsService = require('./services/postgres/PlaylistSongsService');
 const PlaylistSongAvtivitiesService = require('./services/postgres/PlaylistSongActivitiesService');
 const PlaylistValidator = require('./validator/playlist');
 
-/* COLLABORATION PLUGIN */
+/* COLLABORATIONS */
 const collaborations = require('./api/collaborations');
 const CollaborationsService = require('./services/postgres/CollaborationsService');
 const CollaborationValidator = require('./validator/collaboration');
@@ -50,7 +52,7 @@ const init = async () => {
 
   const server = Hapi.server({
     host: process.env.HOST,
-    port: 5000,
+    port: process.env.PORT,
     routes: {
       cors: {
         origin: ['*'],
@@ -58,7 +60,7 @@ const init = async () => {
     },
   });
 
-  /* Register eksternal plugin */
+  /* Register plugin eksternal */
   await server.register([
     {
       plugin: Jwt,
@@ -82,8 +84,11 @@ const init = async () => {
     }),
   });
 
-  /* Register custom plugin */
+  /* Register plugin custom */
   await server.register([
+    {
+      plugin: errors,
+    },
     {
       plugin: albums,
       options: {
@@ -143,53 +148,6 @@ const init = async () => {
       },
     },
   ]);
-
-  /* Interverensi response ke client untuk memfilter apabila ada error yang terjadi pada response
-  ** dan akan dihandle untuk dikirim informasi response error kepada client */
-  server.ext({
-    type: 'onPreResponse',
-    method: (request, h) => {
-      /* Mendapatkan konteks response dari request */
-      const { response } = request;
-      if (response instanceof ClientError) {
-        const newResponse = h.response({
-          status: 'fail',
-          message: response.message,
-        });
-
-        newResponse.code(response.statusCode);
-        return newResponse;
-      }
-
-      if (response instanceof Error) {
-        const { output } = response;
-
-        /* Jika error terjadi pada JWT / Authentication */
-        if (output.statusCode === 401) {
-          const newResponse = h.response({
-            status: 'fail',
-            message: output.payload.message,
-          });
-
-          newResponse.code(401);
-          return newResponse;
-        }
-
-        /* Server Error */
-        const newResponse = h.response({
-          status: 'error',
-          message: 'Terjadi kegagalan pada server',
-        });
-
-        console.error(response.stack);
-        newResponse.code(500);
-        return newResponse;
-      }
-
-      /* Jika bukan ClientError, lanjutkan dengan response sebelumnya (tanpa terintervensi) */
-      return response.continue || response;
-    },
-  });
 
   await server.start();
 
