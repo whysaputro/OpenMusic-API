@@ -24,8 +24,17 @@ class PlaylistSongActivitiesService {
 
   async getActivities(playlistId) {
     const query = {
-      text: 'SELECT username, title, action'
-    }
+      text: `SELECT u.username, s.title, psa.action, psa.time 
+             FROM playlist_song_activities psa 
+             INNER JOIN playlists p ON p.id = psa.playlist_id
+             INNER JOIN songs s ON s.id = psa.song_id
+             INNER JOIN users u ON u.id = psa.user_id
+             WHERE psa.playlist_id = $1`,
+      values: [playlistId],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows;
   }
 }
 

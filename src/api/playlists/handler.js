@@ -146,8 +146,19 @@ class PlaylistsHandler {
   // eslint-disable-next-line no-unused-vars
   async getActivitiesOnPlaylist(request, _) {
     try {
-      const { id } = request.params;
+      const { id: userId } = request.auth.credentials;
+      const { id: playlistId } = request.params;
+      await this._playlistsService.verifyPlaylistOwner(playlistId, userId);
+      await this._playlistsService.getPlaylistById(playlistId);
+      const activities = await this._playlistSongAvtivitiesService.getActivities(playlistId);
+      const data = {};
+      data.playlistId = playlistId;
+      data.activities = activities;
 
+      return {
+        status: 'success',
+        data,
+      };
     } catch (error) {
       return error;
     }
