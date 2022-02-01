@@ -1,9 +1,9 @@
 const { mapSongsToAlbum } = require('../../utils');
 
 class AlbumsHandler {
-  constructor({ albumService, songService }, validator) {
-    this._albumService = albumService;
-    this._songService = songService;
+  constructor({ albumsService, songsService }, validator) {
+    this._albumService = albumsService;
+    this._songService = songsService;
     this._validator = validator;
 
     this.postAlbumHandler = this.postAlbumHandler.bind(this);

@@ -4,42 +4,45 @@ const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
 const ClientError = require('./exceptions/ClientError');
 
-// ALBUM PLUGIN
+/* ALBUM PLUGIN */
 const albums = require('./api/albums');
 const AlbumsService = require('./services/postgres/AlbumsService');
-const AlbumPayloadValidator = require('./validator/album');
+const AlbumValidator = require('./validator/album');
 
-// SONG PLUGIN
+/* SONG PLUGIN */
 const songs = require('./api/songs');
 const SongsService = require('./services/postgres/SongsService');
-const SongPayloadValidator = require('./validator/song');
+const SongValidator = require('./validator/song');
 
-// USER PLUGIN
+/* USER PLUGIN */
 const users = require('./api/users');
 const UsersService = require('./services/postgres/UsersService');
-const UserPayloadValidator = require('./validator/user');
+const UserValidator = require('./validator/user');
 
-// AUTHENTICATION PLUGIN
+/* AUTHENTICATION PLUGIN */
 const authentications = require('./api/authentications');
 const AuthenticationsService = require('./services/postgres/AuthenticationsService');
-const AuthenticationPayloadValidator = require('./validator/authentication');
+const AuthenticationValidator = require('./validator/authentication');
 const TokenManager = require('./tokenize/TokenManager');
 
-// PLAYLIST PLUGIN
+/* PLAYLIST PLUGIN */
 const playlists = require('./api/playlists');
 const PlaylistsService = require('./services/postgres/PlaylistsService');
-const PlaylistPayloadValidator = require('./validator/playlist');
+const PlayListSongsService = require('./services/postgres/PlaylistSongsService');
+const PlaylistValidator = require('./validator/playlist');
 
 const init = async () => {
+  /* Inisialisasi service */
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const playlistsService = new PlaylistsService();
+  const playlistSongsService = new PlayListSongsService();
 
   const server = Hapi.server({
     host: process.env.HOST,
-    port: process.env.PORT,
+    port: 5000,
     routes: {
       cors: {
         origin: ['*'],
@@ -47,13 +50,14 @@ const init = async () => {
     },
   });
 
-  /* Register plugin eksternal */
+  /* Register eksternal plugin */
   await server.register([
     {
       plugin: Jwt,
     },
   ]);
 
+  /* Authentication JWT strategy */
   server.auth.strategy('openmusic_jwt', 'jwt', {
     keys: process.env.ACCESS_TOKEN_KEY,
     verify: {
@@ -70,50 +74,62 @@ const init = async () => {
     }),
   });
 
-  /* Register plugin internal */
+  /* Register custom plugin */
   await server.register([
     {
       plugin: albums,
       options: {
-        service: { albumsService, songsService },
-        validator: AlbumPayloadValidator,
+        service: {
+          albumsService,
+          songsService,
+        },
+        validator: AlbumValidator,
       },
     },
     {
       plugin: songs,
       options: {
         service: songsService,
-        validator: SongPayloadValidator,
+        validator: SongValidator,
       },
     },
     {
       plugin: users,
       options: {
         service: usersService,
-        validator: UserPayloadValidator,
+        validator: UserValidator,
       },
     },
     {
       plugin: authentications,
       options: {
-        service: { usersService, authenticationsService },
-        validator: AuthenticationPayloadValidator,
+        service: {
+          usersService,
+          authenticationsService,
+        },
+        validator: AuthenticationValidator,
         tokenManager: TokenManager,
       },
     },
     {
       plugin: playlists,
       options: {
-        service: playlistsService,
-        validator: PlaylistPayloadValidator,
+        services: {
+          playlistsService,
+          playlistSongsService,
+          songsService,
+        },
+        validator: PlaylistValidator,
       },
     },
   ]);
 
+  /* Interverensi response ke client untuk memfilter apabila ada error yang terjadi pada response
+  ** dan akan dihandle untuk dikirim informasi response error kepada client */
   server.ext({
     type: 'onPreResponse',
     method: (request, h) => {
-      // Mendapatkan konteks response dari request
+      /* Mendapatkan konteks response dari request */
       const { response } = request;
       if (response instanceof ClientError) {
         const newResponse = h.response({
@@ -128,7 +144,7 @@ const init = async () => {
       if (response instanceof Error) {
         const { output } = response;
 
-        // Jika error terjadi pada JWT
+        /* Jika error terjadi pada JWT / Authentication */
         if (output.statusCode === 401) {
           const newResponse = h.response({
             status: 'fail',
@@ -139,7 +155,7 @@ const init = async () => {
           return newResponse;
         }
 
-        // Server Error
+        /* Server Error */
         const newResponse = h.response({
           status: 'error',
           message: 'Terjadi kegagalan pada server',
@@ -150,7 +166,7 @@ const init = async () => {
         return newResponse;
       }
 
-      // jika bukan ClientError, lanjutkan dengan response sebelumnya (tanpa terintervensi)
+      /* Jika bukan ClientError, lanjutkan dengan response sebelumnya (tanpa terintervensi) */
       return response.continue || response;
     },
   });
