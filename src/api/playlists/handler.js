@@ -1,8 +1,11 @@
 class PlaylistsHandler {
-  constructor({ playlistsService, playlistSongsService, songsService }, validator) {
+  constructor({
+    playlistsService, playlistSongsService, songsService, playlistSongAvtivitiesService,
+  }, validator) {
     this._playlistsService = playlistsService;
     this._playlistSongsService = playlistSongsService;
     this._songsService = songsService;
+    this._playlistSongAvtivitiesService = playlistSongAvtivitiesService;
     this._validator = validator;
 
     this.postPlaylistHandler = this.postPlaylistHandler.bind(this);
@@ -11,6 +14,7 @@ class PlaylistsHandler {
     this.postSongToPlaylistHandler = this.postSongToPlaylistHandler.bind(this);
     this.getSongsFromPlaylistHandler = this.getSongsFromPlaylistHandler.bind(this);
     this.deleteSongFromPlaylistHandler = this.deleteSongFromPlaylistHandler.bind(this);
+    this.getActivitiesOnPlaylist = this.getActivitiesOnPlaylist.bind(this);
   }
 
   async postPlaylistHandler(request, h) {
@@ -82,6 +86,7 @@ class PlaylistsHandler {
       await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
       await this._songsService.getSongById(songId);
       await this._playlistSongsService.addSongToPlaylist(playlistId, songId);
+      await this._playlistSongAvtivitiesService.addActivitiy(playlistId, songId, userId, 'add');
 
       const response = h.response({
         status: 'success',
@@ -127,11 +132,22 @@ class PlaylistsHandler {
 
       await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
       await this._playlistSongsService.deleteSongFromPlaylist(songId);
+      await this._playlistSongAvtivitiesService.addActivitiy(playlistId, songId, userId, 'delete');
 
       return {
         status: 'success',
         message: 'Berhasil menghapus lagu dari playlist',
       };
+    } catch (error) {
+      return error;
+    }
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  async getActivitiesOnPlaylist(request, _) {
+    try {
+      const { id } = request.params;
+
     } catch (error) {
       return error;
     }
