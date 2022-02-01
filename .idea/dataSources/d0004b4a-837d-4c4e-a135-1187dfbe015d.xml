@@ -27,7 +27,7 @@
 16428||-9223372036854775808|T|G
 16428||10|T|G
 16428||16394|T|G</Grants>
-      <IntrospectionStateNumber>2509</IntrospectionStateNumber>
+      <IntrospectionStateNumber>2526</IntrospectionStateNumber>
       <ServerVersion>14.1</ServerVersion>
       <StartupTime>1643553740</StartupTime>
       <TimeZones>true ACDT
@@ -832,7 +832,7 @@ false Zulu
 13654||10|C|G
 13654||-9223372036854775808|U|G
 13654||10|U|G</Grants>
-      <IntrospectionStateNumber>2510</IntrospectionStateNumber>
+      <IntrospectionStateNumber>2527</IntrospectionStateNumber>
       <ObjectId>16428</ObjectId>
       <Relations>sequence|table|16429|16430|1
 </Relations>
@@ -4264,7 +4264,7 @@ false Zulu
     <schema id="265" parent="4" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>2510</IntrospectionStateNumber>
+      <IntrospectionStateNumber>2527</IntrospectionStateNumber>
       <ObjectId>2200</ObjectId>
       <StateNumber>527</StateNumber>
       <OwnerName>postgres</OwnerName>
@@ -4277,13 +4277,13 @@ false Zulu
     </sequence>
     <table id="267" parent="265" name="albums">
       <ObjectId>17832</ObjectId>
-      <StateNumber>2496</StateNumber>
+      <StateNumber>2522</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>developer</OwnerName>
     </table>
     <table id="268" parent="265" name="authentications">
       <ObjectId>17906</ObjectId>
-      <StateNumber>2507</StateNumber>
+      <StateNumber>2522</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>developer</OwnerName>
     </table>
@@ -4293,54 +4293,60 @@ false Zulu
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>developer</OwnerName>
     </table>
-    <table id="270" parent="265" name="songs">
+    <table id="270" parent="265" name="playlists">
+      <ObjectId>17961</ObjectId>
+      <StateNumber>2524</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>developer</OwnerName>
+    </table>
+    <table id="271" parent="265" name="songs">
       <ObjectId>17823</ObjectId>
-      <StateNumber>2496</StateNumber>
+      <StateNumber>2522</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>developer</OwnerName>
     </table>
-    <table id="271" parent="265" name="users">
+    <table id="272" parent="265" name="users">
       <ObjectId>17889</ObjectId>
-      <StateNumber>2498</StateNumber>
+      <StateNumber>2524</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>developer</OwnerName>
     </table>
-    <column id="272" parent="267" name="id">
+    <column id="273" parent="267" name="id">
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="273" parent="267" name="name">
+    <column id="274" parent="267" name="name">
       <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="274" parent="267" name="year">
+    <column id="275" parent="267" name="year">
       <DataType>smallint|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>21</TypeId>
     </column>
-    <column id="275" parent="267" name="created_at">
+    <column id="276" parent="267" name="created_at">
       <DataType>text|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>4</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="276" parent="267" name="updated_at">
+    <column id="277" parent="267" name="updated_at">
       <DataType>text|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>5</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <index id="277" parent="267" name="albums_pkey">
+    <index id="278" parent="267" name="albums_pkey">
       <ClassIds>3126</ClassIds>
       <ColNames>id</ColNames>
       <CollationIds>100</CollationIds>
@@ -4348,11 +4354,11 @@ false Zulu
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17839</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>2496</StateNumber>
+      <StateNumber>2522</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="278" parent="267" name="albums_pkey">
+    <key id="279" parent="267" name="albums_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17840</ObjectId>
@@ -4360,28 +4366,28 @@ false Zulu
       <StateNumber>2473</StateNumber>
       <UnderlyingIndexId>17839</UnderlyingIndexId>
     </key>
-    <column id="279" parent="268" name="token">
+    <column id="280" parent="268" name="token">
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>2507</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="280" parent="268" name="created_at">
+    <column id="281" parent="268" name="created_at">
       <DataType>text|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>2</Position>
       <StateNumber>2507</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="281" parent="268" name="updated_at">
+    <column id="282" parent="268" name="updated_at">
       <DataType>text|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>3</Position>
       <StateNumber>2507</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="282" parent="269" name="id">
+    <column id="283" parent="269" name="id">
       <DataType>integer|0s</DataType>
       <DefaultExpression>nextval(&apos;pgmigrations_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
@@ -4389,21 +4395,21 @@ false Zulu
       <StateNumber>773</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="283" parent="269" name="name">
+    <column id="284" parent="269" name="name">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>773</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="284" parent="269" name="run_on">
+    <column id="285" parent="269" name="run_on">
       <DataType>timestamp|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>773</StateNumber>
       <TypeId>1114</TypeId>
     </column>
-    <index id="285" parent="269" name="pgmigrations_pkey">
+    <index id="286" parent="269" name="pgmigrations_pkey">
       <ClassIds>1978</ClassIds>
       <ColNames>id</ColNames>
       <CollationIds>0</CollationIds>
@@ -4414,7 +4420,7 @@ false Zulu
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="286" parent="269" name="pgmigrations_pkey">
+    <key id="287" parent="269" name="pgmigrations_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16435</ObjectId>
@@ -4422,68 +4428,135 @@ false Zulu
       <StateNumber>773</StateNumber>
       <UnderlyingIndexId>16434</UnderlyingIndexId>
     </key>
-    <column id="287" parent="270" name="id">
+    <column id="288" parent="270" name="id">
+      <DataType>varchar(50)|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>2524</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="289" parent="270" name="name">
+      <DataType>varchar(50)|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>2524</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="290" parent="270" name="owner">
+      <DataType>varchar(50)|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>2524</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="291" parent="270" name="created_at">
+      <DataType>text|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <Position>4</Position>
+      <StateNumber>2524</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="292" parent="270" name="updated_at">
+      <DataType>text|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <Position>5</Position>
+      <StateNumber>2524</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <foreign-key id="293" parent="270" name="fk_playlists.owner_users.id">
+      <ColNames>owner</ColNames>
+      <ObjectId>17970</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>id</RefColNames>
+      <RefColPositions>1</RefColPositions>
+      <RefKeyName>users_pkey</RefKeyName>
+      <StateNumber>2524</StateNumber>
+      <RefTableId>17889</RefTableId>
+      <RefTableName>users</RefTableName>
+      <RefTableKind>table</RefTableKind>
+    </foreign-key>
+    <index id="294" parent="270" name="playlists_pkey">
+      <ClassIds>3126</ClassIds>
+      <ColNames>id</ColNames>
+      <CollationIds>100</CollationIds>
+      <CollationNames>default</CollationNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>17968</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>2524</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="295" parent="270" name="playlists_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>17969</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>2524</StateNumber>
+      <UnderlyingIndexId>17968</UnderlyingIndexId>
+    </key>
+    <column id="296" parent="271" name="id">
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="288" parent="270" name="title">
+    <column id="297" parent="271" name="title">
       <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="289" parent="270" name="year">
+    <column id="298" parent="271" name="year">
       <DataType>smallint|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>21</TypeId>
     </column>
-    <column id="290" parent="270" name="performer">
+    <column id="299" parent="271" name="performer">
       <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="291" parent="270" name="genre">
+    <column id="300" parent="271" name="genre">
       <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="292" parent="270" name="duration">
+    <column id="301" parent="271" name="duration">
       <DataType>smallint|0s</DataType>
       <Position>6</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>21</TypeId>
     </column>
-    <column id="293" parent="270" name="album_id">
+    <column id="302" parent="271" name="album_id">
       <DataType>varchar(50)|0s</DataType>
       <Position>7</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="294" parent="270" name="created_at">
+    <column id="303" parent="271" name="created_at">
       <DataType>text|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>8</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="295" parent="270" name="updated_at">
+    <column id="304" parent="271" name="updated_at">
       <DataType>text|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>9</Position>
       <StateNumber>2473</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <index id="296" parent="270" name="songs_pkey">
+    <index id="305" parent="271" name="songs_pkey">
       <ClassIds>3126</ClassIds>
       <ColNames>id</ColNames>
       <CollationIds>100</CollationIds>
@@ -4491,11 +4564,11 @@ false Zulu
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17830</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>2496</StateNumber>
+      <StateNumber>2522</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="297" parent="270" name="songs_pkey">
+    <key id="306" parent="271" name="songs_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17831</ObjectId>
@@ -4503,49 +4576,49 @@ false Zulu
       <StateNumber>2473</StateNumber>
       <UnderlyingIndexId>17830</UnderlyingIndexId>
     </key>
-    <column id="298" parent="271" name="id">
+    <column id="307" parent="272" name="id">
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>2498</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="299" parent="271" name="username">
+    <column id="308" parent="272" name="username">
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>2498</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="300" parent="271" name="password">
+    <column id="309" parent="272" name="password">
       <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>2498</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="301" parent="271" name="fullname">
+    <column id="310" parent="272" name="fullname">
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>2498</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="302" parent="271" name="created_at">
+    <column id="311" parent="272" name="created_at">
       <DataType>text|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>5</Position>
       <StateNumber>2498</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="303" parent="271" name="updated_at">
+    <column id="312" parent="272" name="updated_at">
       <DataType>text|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>6</Position>
       <StateNumber>2498</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <index id="304" parent="271" name="users_pkey">
+    <index id="313" parent="272" name="users_pkey">
       <ClassIds>3126</ClassIds>
       <ColNames>id</ColNames>
       <CollationIds>100</CollationIds>
@@ -4553,22 +4626,22 @@ false Zulu
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17896</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>2498</StateNumber>
+      <StateNumber>2522</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="305" parent="271" name="users_username_key">
+    <index id="314" parent="272" name="users_username_key">
       <ClassIds>3126</ClassIds>
       <ColNames>username</ColNames>
       <CollationIds>100</CollationIds>
       <CollationNames>default</CollationNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17898</ObjectId>
-      <StateNumber>2498</StateNumber>
+      <StateNumber>2522</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="306" parent="271" name="users_pkey">
+    <key id="315" parent="272" name="users_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17897</ObjectId>
@@ -4576,7 +4649,7 @@ false Zulu
       <StateNumber>2498</StateNumber>
       <UnderlyingIndexId>17896</UnderlyingIndexId>
     </key>
-    <key id="307" parent="271" name="users_username_key">
+    <key id="316" parent="272" name="users_username_key">
       <ColNames>username</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17899</ObjectId>

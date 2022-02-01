@@ -25,11 +25,17 @@ const AuthenticationsService = require('./services/postgres/AuthenticationsServi
 const AuthenticationPayloadValidator = require('./validator/authentication');
 const TokenManager = require('./tokenize/TokenManager');
 
+// PLAYLIST PLUGIN
+const playlists = require('./api/playlists');
+const PlaylistsService = require('./services/postgres/PlaylistsService');
+const PlaylistPayloadValidator = require('./validator/playlist');
+
 const init = async () => {
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
+  const playlistsService = new PlaylistsService();
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -41,14 +47,30 @@ const init = async () => {
     },
   });
 
-  // Register plugin eksternal
+  /* Register plugin eksternal */
   await server.register([
     {
       plugin: Jwt,
     },
   ]);
 
-  // Register plugin internal
+  server.auth.strategy('openmusic_jwt', 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
+  });
+
+  /* Register plugin internal */
   await server.register([
     {
       plugin: albums,
@@ -79,23 +101,14 @@ const init = async () => {
         tokenManager: TokenManager,
       },
     },
-  ]);
-
-  server.auth.strategy('openmusic_jwt', 'jwt', {
-    keys: process.env.ACCESS_TOKEN_KEY,
-    verify: {
-      aud: false,
-      iss: false,
-      sub: false,
-      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
-    },
-    validate: (artifacts) => ({
-      isValid: true,
-      credentials: {
-        id: artifacts.decoded.payload.id,
+    {
+      plugin: playlists,
+      options: {
+        service: playlistsService,
+        validator: PlaylistPayloadValidator,
       },
-    }),
-  });
+    },
+  ]);
 
   server.ext({
     type: 'onPreResponse',
@@ -113,8 +126,22 @@ const init = async () => {
       }
 
       if (response instanceof Error) {
+        const { output } = response;
+
+        // Jika error terjadi pada JWT
+        if (output.statusCode === 401) {
+          const newResponse = h.response({
+            status: 'fail',
+            message: output.payload.message,
+          });
+
+          newResponse.code(401);
+          return newResponse;
+        }
+
+        // Server Error
         const newResponse = h.response({
-          status: 'fail',
+          status: 'error',
           message: 'Terjadi kegagalan pada server',
         });
 
