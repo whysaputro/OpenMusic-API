@@ -1,4 +1,5 @@
-const { mapSongsToAlbum } = require('../../utils');
+const concatenateSongsToAlbumModel = require('../../utils/model/AlbumModel');
+const { successResponse } = require('../../utils/responses');
 
 class AlbumsHandler {
   constructor({ albumsService, songsService }, validator) {
@@ -13,75 +14,52 @@ class AlbumsHandler {
   }
 
   async postAlbumHandler(request, h) {
-    try {
-      this._validator.validateAlbumPayload(request.payload);
+    this._validator.validateAlbumPayload(request.payload);
 
-      const { name, year } = request.payload;
+    const { name, year } = request.payload;
 
-      const albumId = await this._albumService.addAlbum(name, year);
+    const albumId = await this._albumService.addAlbum(name, year);
 
-      const response = h.response({
-        status: 'success',
-        data: {
-          albumId,
-        },
-      });
-
-      response.code(201);
-      return response;
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseData: {
+        albumId,
+      },
+      responseCode: 201,
+    });
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async getAlbumByIdHandler(request, _) {
-    try {
-      const { id: albumId } = request.params;
-      const album = await this._albumService.getAlbumById(albumId);
-      const songs = await this._songService.getSongByAlbumId(albumId);
+  async getAlbumByIdHandler(request, h) {
+    const { id: albumId } = request.params;
+    const album = await this._albumService.getAlbumById(albumId);
+    const songs = await this._songService.getSongByAlbumId(albumId);
 
-      return {
-        status: 'success',
-        data: {
-          album: mapSongsToAlbum(album, songs),
-        },
-      };
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseData: {
+        album: concatenateSongsToAlbumModel(album, songs),
+      },
+    });
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async putAlbumByIdHandler(request, _) {
-    try {
-      this._validator.validateAlbumPayload(request.payload);
-      const { id: albumId } = request.params;
-      const { name, year } = request.payload;
-      await this._albumService.editAlbumById(albumId, name, year);
+  async putAlbumByIdHandler(request, h) {
+    this._validator.validateAlbumPayload(request.payload);
 
-      return {
-        status: 'success',
-        message: 'Album berhasil diperbarui',
-      };
-    } catch (error) {
-      return error;
-    }
+    const { id: albumId } = request.params;
+    const { name, year } = request.payload;
+
+    await this._albumService.editAlbumById(albumId, name, year);
+
+    return successResponse(h, {
+      responseMessage: 'Album berhasil diperbarui',
+    });
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async deleteAlbumByIdHandler(request, _) {
-    try {
-      const { id: albumId } = request.params;
-      await this._albumService.deleteAlbumById(albumId);
+  async deleteAlbumByIdHandler(request, h) {
+    const { id: albumId } = request.params;
+    await this._albumService.deleteAlbumById(albumId);
 
-      return {
-        status: 'success',
-        message: 'Album berhasil dihapus',
-      };
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseMessage: 'Album berhasil dihapus',
+    });
   }
 }
 

@@ -1,3 +1,5 @@
+const { successResponse } = require('../../utils/responses');
+
 class SongsHandler {
   constructor(service, validator) {
     this._service = service;
@@ -11,120 +13,99 @@ class SongsHandler {
   }
 
   async postSongHandler(request, h) {
-    try {
-      this._validator.validateSongPayload(request.payload);
-      const {
-        title, year, performer, genre, duration, albumId,
-      } = request.payload;
+    this._validator.validateSongPayload(request.payload);
+    const {
+      title, year, performer, genre, duration, albumId,
+    } = request.payload;
 
-      const songId = await this._service.addSong({
-        title, year, performer, genre, duration, albumId,
-      });
+    const songId = await this._service.addSong(title, year, performer, genre, duration, albumId);
 
-      const response = h.response({
-        status: 'success',
-        data: {
-          songId,
-        },
-      });
-
-      response.code(201);
-      return response;
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseData: {
+        songId,
+      },
+      responseCode: 201,
+    });
   }
 
-  async getSongsHandler(request) {
+  async getSongsHandler(request, h) {
     const { title, performer } = request.query;
     const songs = await this._service.getSongs(title, performer);
 
     if (title && performer) {
-      return {
-        status: 'success',
-        data: {
+      return successResponse(h, {
+        responseData: {
           // eslint-disable-next-line max-len
           songs: songs.filter((el) => el.title.toLowerCase().includes(title) && el.performer.toLowerCase().includes(performer)),
         },
-      };
+      });
     }
 
     if (title) {
-      return {
-        status: 'success',
-        data: {
+      return successResponse(h, {
+        responseData: {
           songs: songs.filter((el) => el.title.toLowerCase().includes(title)),
         },
-      };
+      });
     }
 
     if (performer) {
-      return {
-        status: 'success',
-        data: {
+      return successResponse(h, {
+        responseData: {
           songs: songs.filter((el) => el.performer.toLowerCase().includes(performer)),
         },
-      };
+      });
     }
 
-    return {
-      status: 'success',
-      data: {
+    return successResponse(h, {
+      responseData: {
         songs,
       },
-    };
+    });
   }
 
-  async getSongByIdHandler(request) {
-    try {
-      const { id } = request.params;
+  async getSongByIdHandler(request, h) {
+    const { id: songId } = request.params;
 
-      const song = await this._service.getSongById(id);
-      return {
-        status: 'success',
-        data: {
-          song,
-        },
-      };
-    } catch (error) {
-      return error;
-    }
+    const song = await this._service.getSongById(songId);
+
+    return successResponse(h, {
+      responseData: {
+        song,
+      },
+    });
   }
 
-  async putSongByIdHandler(request) {
-    try {
-      this._validator.validateSongPayload(request.payload);
-      const { id } = request.params;
-      const {
-        title, year, performer, genre, duration, albumId,
-      } = request.payload;
+  async putSongByIdHandler(request, h) {
+    this._validator.validateSongPayload(request.payload);
+    const { id: songId } = request.params;
+    const {
+      title, year, performer, genre, duration, albumId,
+    } = request.payload;
 
-      await this._service.editSongById(id, {
-        title, year, performer, genre, duration, albumId,
-      });
+    await this._service.editSongById(
+      songId,
+      title,
+      year,
+      performer,
+      genre,
+      duration,
+      albumId,
+    );
 
-      return {
-        status: 'success',
-        message: 'Lagu berhasil diperbarui',
-      };
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseMessage: 'Lagu berhasil diperbarui',
+    });
   }
 
-  async deleteSongByIdHandler(request) {
-    try {
-      const { id } = request.params;
+  async deleteSongByIdHandler(request, h) {
+    const { id: songId } = request.params;
 
-      await this._service.deleteSongById(id);
+    await this._service.deleteSongById(songId);
 
-      return {
-        status: 'success',
-        message: 'Lagu berhasil dihapus',
-      };
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseMessage: 'Lagu berhasil dihapus',
+    });
   }
 }
 

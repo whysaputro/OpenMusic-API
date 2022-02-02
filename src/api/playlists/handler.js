@@ -1,3 +1,6 @@
+const { successResponse } = require('../../utils/responses');
+const createPlaylistActivitiesObject = require('../../utils/model/PlaylistModel');
+
 class PlaylistsHandler {
   constructor({
     playlistsService, playlistSongsService, songsService, playlistSongAvtivitiesService,
@@ -18,152 +21,107 @@ class PlaylistsHandler {
   }
 
   async postPlaylistHandler(request, h) {
-    try {
-      this._validator.validatePlaylistPayload(request.payload);
-      const { id: userId } = request.auth.credentials;
-      const { name } = request.payload;
+    this._validator.validatePlaylistPayload(request.payload);
+    const { id: userId } = request.auth.credentials;
+    const { name } = request.payload;
 
-      const playlistId = await this._playlistsService.addPlaylist(name, userId);
+    const playlistId = await this._playlistsService.addPlaylist(name, userId);
 
-      const response = h.response({
-        status: 'success',
-        data: {
-          playlistId,
-        },
-      });
-
-      response.code(201);
-      return response;
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseData: {
+        playlistId,
+      },
+      responseCode: 201,
+    });
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async getPlaylistsHandler(request, _) {
-    try {
-      const { id: userId } = request.auth.credentials;
-      const playlists = await this._playlistsService.getPlaylists(userId);
+  async getPlaylistsHandler(request, h) {
+    const { id: userId } = request.auth.credentials;
+    const playlists = await this._playlistsService.getPlaylists(userId);
 
-      return {
-        status: 'success',
-        data: {
-          playlists,
-        },
-      };
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseData: {
+        playlists,
+      },
+    });
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async deletePlaylistByIdHandler(request, _) {
-    try {
-      const { id: userId } = request.auth.credentials;
-      const { id: playlistId } = request.params;
+  async deletePlaylistByIdHandler(request, h) {
+    const { id: userId } = request.auth.credentials;
+    const { id: playlistId } = request.params;
 
-      await this._playlistsService.verifyPlaylistOwner(playlistId, userId);
-      await this._playlistsService.deletePlaylistById(playlistId);
+    await this._playlistsService.verifyPlaylistOwner(playlistId, userId);
+    await this._playlistsService.deletePlaylistById(playlistId);
 
-      return {
-        status: 'success',
-        message: 'Playlist berhasil dihapus',
-      };
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseMessage: 'Playlist berhasil dihapus',
+    });
   }
 
-  // eslint-disable-next-line no-unused-vars
   async postSongToPlaylistHandler(request, h) {
-    try {
-      this._validator.validatePlaylistSongPayload(request.payload);
+    this._validator.validatePlaylistSongPayload(request.payload);
 
-      const { id: userId } = request.auth.credentials;
-      const { id: playlistId } = request.params;
-      const { songId } = request.payload;
+    const { id: userId } = request.auth.credentials;
+    const { id: playlistId } = request.params;
+    const { songId } = request.payload;
 
-      await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
-      await this._songsService.verifySongIsExist(songId);
-      await this._playlistSongsService.addSongToPlaylist(playlistId, songId);
-      await this._playlistSongAvtivitiesService.addActivitiy(playlistId, songId, userId, 'add');
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
+    await this._songsService.verifySongIsExist(songId);
+    await this._playlistSongsService.addSongToPlaylist(playlistId, songId);
+    await this._playlistSongAvtivitiesService.addActivitiy(playlistId, songId, userId, 'add');
 
-      const response = h.response({
-        status: 'success',
-        message: 'Lagu berhasil ditambahkan ke dalam playlist',
-      });
+    const response = h.response({
+      status: 'success',
+      message: 'Lagu berhasil ditambahkan ke dalam playlist',
+    });
 
-      response.code(201);
-      return response;
-    } catch (error) {
-      return error;
-    }
+    response.code(201);
+    return response;
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async getSongsFromPlaylistHandler(request, _) {
-    try {
-      const { id: userId } = request.auth.credentials;
-      const { id: playlistId } = request.params;
+  async getSongsFromPlaylistHandler(request, h) {
+    const { id: userId } = request.auth.credentials;
+    const { id: playlistId } = request.params;
 
-      await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
-      const playlist = await this._playlistsService.getPlaylistById(playlistId);
-      playlist.songs = await this._playlistSongsService.getSongsFromPlaylistId(playlistId);
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
+    const playlist = await this._playlistsService.getPlaylistById(playlistId);
+    playlist.songs = await this._playlistSongsService.getSongsFromPlaylistId(playlistId);
 
-      return {
-        status: 'success',
-        data: {
-          playlist,
-        },
-      };
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseData: {
+        playlist,
+      },
+    });
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async deleteSongFromPlaylistHandler(request, _) {
-    try {
-      this._validator.validatePlaylistSongPayload(request.payload);
+  async deleteSongFromPlaylistHandler(request, h) {
+    this._validator.validatePlaylistSongPayload(request.payload);
 
-      const { id: userId } = request.auth.credentials;
-      const { id: playlistId } = request.params;
-      const { songId } = request.payload;
+    const { id: userId } = request.auth.credentials;
+    const { id: playlistId } = request.params;
+    const { songId } = request.payload;
 
-      await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
-      await this._playlistSongsService.deleteSongFromPlaylist(songId);
-      await this._playlistSongAvtivitiesService.addActivitiy(playlistId, songId, userId, 'delete');
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
+    await this._playlistSongsService.deleteSongFromPlaylist(songId);
+    await this._playlistSongAvtivitiesService.addActivitiy(playlistId, songId, userId, 'delete');
 
-      return {
-        status: 'success',
-        message: 'Berhasil menghapus lagu dari playlist',
-      };
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseMessage: 'Berhasil menghapus lagu dari playlist',
+    });
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async getActivitiesOnPlaylist(request, _) {
-    try {
-      const { id: userId } = request.auth.credentials;
-      const { id: playlistId } = request.params;
+  async getActivitiesOnPlaylist(request, h) {
+    const { id: userId } = request.auth.credentials;
+    const { id: playlistId } = request.params;
 
-      await this._playlistsService.verifyPlaylistOwner(playlistId, userId);
-      await this._playlistsService.verifyPlaylistIsExist(playlistId);
+    await this._playlistsService.verifyPlaylistOwner(playlistId, userId);
+    await this._playlistsService.verifyPlaylistIsExist(playlistId);
 
-      const activities = await this._playlistSongAvtivitiesService.getActivities(playlistId);
-      const data = {};
-      data.playlistId = playlistId;
-      data.activities = activities;
+    const activities = await this._playlistSongAvtivitiesService.getActivities(playlistId);
 
-      return {
-        status: 'success',
-        data,
-      };
-    } catch (error) {
-      return error;
-    }
+    return successResponse(h, {
+      responseData: createPlaylistActivitiesObject(playlistId, activities),
+    });
   }
 }
 
