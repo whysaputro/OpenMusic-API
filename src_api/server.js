@@ -50,8 +50,12 @@ const StorageService = require('./services/S3/StorageService');
 /* ALBUM LIKES SERVICE */
 const UserAlbumLikesService = require('./services/postgres/UserAlbumLikesService');
 
+/* CACHE SERVICE */
+const CacheService = require('./services/redis/CacheService');
+
 const init = async () => {
   /* Inisialisasi service */
+  const cacheService = new CacheService();
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
   const usersService = new UsersService();
@@ -61,7 +65,7 @@ const init = async () => {
   const playlistSongsService = new PlaylistSongsService();
   const playlistSongAvtivitiesService = new PlaylistSongAvtivitiesService();
   const storageService = new StorageService();
-  const userAlbumLikesService = new UserAlbumLikesService();
+  const userAlbumLikesService = new UserAlbumLikesService(cacheService);
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -109,7 +113,7 @@ const init = async () => {
           albumsService,
           songsService,
           storageService,
-          userAlbumLikesService
+          userAlbumLikesService,
         },
         validator: AlbumValidator,
       },

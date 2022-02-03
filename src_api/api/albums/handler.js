@@ -1,3 +1,4 @@
+const { string } = require('joi');
 const concatenateSongsToAlbumModel = require('../../utils/model/AlbumModel');
 const { successResponse } = require('../../utils/responses');
 
@@ -101,6 +102,14 @@ class AlbumsHandler {
     const { id: albumId } = request.params;
 
     const numOfLikes = await this._userAlbumLikesService.getAlbumLikesByAlbumId(albumId);
+
+    if (typeof numOfLikes === 'string') {
+      return successResponse(h, {
+        responseData: {
+          likes: Number(numOfLikes),
+        },
+      }).header('X-Data-Source', 'cache');
+    }
 
     return successResponse(h, {
       responseData: {

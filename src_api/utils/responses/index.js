@@ -1,4 +1,6 @@
-const successResponse = (h, { responseMessage, responseData, responseCode = 200 }) => {
+const successResponse = (h, {
+  responseMessage, responseData, responseCode = 200,
+}) => {
   const response = {
     status: 'success',
   };
