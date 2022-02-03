@@ -21,10 +21,10 @@ class PlaylistsHandler {
   }
 
   async postPlaylistHandler(request, h) {
-    this._validator.validatePlaylistPayload(request.payload);
     const { id: userId } = request.auth.credentials;
     const { name } = request.payload;
 
+    this._validator.validatePlaylistPayload(request.payload);
     const playlistId = await this._playlistsService.addPlaylist(name, userId);
 
     return successResponse(h, {
@@ -37,6 +37,7 @@ class PlaylistsHandler {
 
   async getPlaylistsHandler(request, h) {
     const { id: userId } = request.auth.credentials;
+
     const playlists = await this._playlistsService.getPlaylists(userId);
 
     return successResponse(h, {
@@ -59,12 +60,11 @@ class PlaylistsHandler {
   }
 
   async postSongToPlaylistHandler(request, h) {
-    this._validator.validatePlaylistSongPayload(request.payload);
-
     const { id: userId } = request.auth.credentials;
     const { id: playlistId } = request.params;
     const { songId } = request.payload;
 
+    this._validator.validatePlaylistSongPayload(request.payload);
     await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
     await this._songsService.verifySongIsExist(songId);
     await this._playlistSongsService.addSongToPlaylist(playlistId, songId);
@@ -95,12 +95,11 @@ class PlaylistsHandler {
   }
 
   async deleteSongFromPlaylistHandler(request, h) {
-    this._validator.validatePlaylistSongPayload(request.payload);
-
     const { id: userId } = request.auth.credentials;
     const { id: playlistId } = request.params;
     const { songId } = request.payload;
 
+    this._validator.validatePlaylistSongPayload(request.payload);
     await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
     await this._playlistSongsService.deleteSongFromPlaylist(songId);
     await this._playlistSongAvtivitiesService.addActivitiy(playlistId, songId, userId, 'delete');
@@ -116,7 +115,6 @@ class PlaylistsHandler {
 
     await this._playlistsService.verifyPlaylistOwner(playlistId, userId);
     await this._playlistsService.verifyPlaylistIsExist(playlistId);
-
     const activities = await this._playlistSongAvtivitiesService.getActivities(playlistId);
 
     return successResponse(h, {

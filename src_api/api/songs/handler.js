@@ -13,11 +13,11 @@ class SongsHandler {
   }
 
   async postSongHandler(request, h) {
-    this._validator.validateSongPayload(request.payload);
     const {
       title, year, performer, genre, duration, albumId,
     } = request.payload;
 
+    this._validator.validateSongPayload(request.payload);
     // eslint-disable-next-line max-len
     const songId = await this._services.addSong(title, year, performer, genre, duration, albumId);
 
@@ -31,6 +31,7 @@ class SongsHandler {
 
   async getSongsHandler(request, h) {
     const { title, performer } = request.query;
+
     const songs = await this._services.getSongs(title, performer);
 
     if (title && performer) {
@@ -78,12 +79,12 @@ class SongsHandler {
   }
 
   async putSongByIdHandler(request, h) {
-    this._validator.validateSongPayload(request.payload);
     const { id: songId } = request.params;
     const {
       title, year, performer, genre, duration, albumId,
     } = request.payload;
 
+    this._validator.validateSongPayload(request.payload);
     await this._services.editSongById(
       songId,
       title,

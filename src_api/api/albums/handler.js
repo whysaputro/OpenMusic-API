@@ -14,10 +14,9 @@ class AlbumsHandler {
   }
 
   async postAlbumHandler(request, h) {
-    this._validator.validateAlbumPayload(request.payload);
-
     const { name, year } = request.payload;
 
+    this._validator.validateAlbumPayload(request.payload);
     const albumId = await this._albumService.addAlbum(name, year);
 
     return successResponse(h, {
@@ -30,6 +29,7 @@ class AlbumsHandler {
 
   async getAlbumByIdHandler(request, h) {
     const { id: albumId } = request.params;
+
     const album = await this._albumService.getAlbumById(albumId);
     const songs = await this._songService.getSongByAlbumId(albumId);
 
@@ -41,11 +41,10 @@ class AlbumsHandler {
   }
 
   async putAlbumByIdHandler(request, h) {
-    this._validator.validateAlbumPayload(request.payload);
-
     const { id: albumId } = request.params;
     const { name, year } = request.payload;
 
+    this._validator.validateAlbumPayload(request.payload);
     await this._albumService.editAlbumById(albumId, name, year);
 
     return successResponse(h, {
@@ -55,6 +54,7 @@ class AlbumsHandler {
 
   async deleteAlbumByIdHandler(request, h) {
     const { id: albumId } = request.params;
+
     await this._albumService.deleteAlbumById(albumId);
 
     return successResponse(h, {
