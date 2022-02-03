@@ -47,6 +47,9 @@ const ExportValidator = require('./validator/export');
 /* STORAGE AWS S3 */
 const StorageService = require('./services/S3/StorageService');
 
+/* ALBUM LIKES SERVICE */
+const UserAlbumLikesService = require('./services/postgres/UserAlbumLikesService');
+
 const init = async () => {
   /* Inisialisasi service */
   const albumsService = new AlbumsService();
@@ -58,6 +61,7 @@ const init = async () => {
   const playlistSongsService = new PlaylistSongsService();
   const playlistSongAvtivitiesService = new PlaylistSongAvtivitiesService();
   const storageService = new StorageService();
+  const userAlbumLikesService = new UserAlbumLikesService();
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -105,6 +109,7 @@ const init = async () => {
           albumsService,
           songsService,
           storageService,
+          userAlbumLikesService
         },
         validator: AlbumValidator,
       },
