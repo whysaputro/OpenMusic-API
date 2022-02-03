@@ -44,6 +44,9 @@ const _exports = require('./api/exports');
 const ProducerService = require('./services/rabbitmq/ProducerService');
 const ExportValidator = require('./validator/export');
 
+/* STORAGE AWS S3 */
+const StorageService = require('./services/S3/StorageService');
+
 const init = async () => {
   /* Inisialisasi service */
   const albumsService = new AlbumsService();
@@ -54,6 +57,7 @@ const init = async () => {
   const playlistsService = new PlaylistsService(collaborationsService);
   const playlistSongsService = new PlaylistSongsService();
   const playlistSongAvtivitiesService = new PlaylistSongAvtivitiesService();
+  const storageService = new StorageService();
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -100,6 +104,7 @@ const init = async () => {
         services: {
           albumsService,
           songsService,
+          storageService,
         },
         validator: AlbumValidator,
       },
