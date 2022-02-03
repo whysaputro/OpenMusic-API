@@ -1,8 +1,8 @@
 const { successResponse } = require('../../utils/responses');
 
 class SongsHandler {
-  constructor(service, validator) {
-    this._service = service;
+  constructor(services, validator) {
+    this._services = services;
     this._validator = validator;
 
     this.postSongHandler = this.postSongHandler.bind(this);
@@ -18,7 +18,8 @@ class SongsHandler {
       title, year, performer, genre, duration, albumId,
     } = request.payload;
 
-    const songId = await this._service.addSong(title, year, performer, genre, duration, albumId);
+    // eslint-disable-next-line max-len
+    const songId = await this._services.addSong(title, year, performer, genre, duration, albumId);
 
     return successResponse(h, {
       responseData: {
@@ -30,7 +31,7 @@ class SongsHandler {
 
   async getSongsHandler(request, h) {
     const { title, performer } = request.query;
-    const songs = await this._service.getSongs(title, performer);
+    const songs = await this._services.getSongs(title, performer);
 
     if (title && performer) {
       return successResponse(h, {
@@ -67,7 +68,7 @@ class SongsHandler {
   async getSongByIdHandler(request, h) {
     const { id: songId } = request.params;
 
-    const song = await this._service.getSongById(songId);
+    const song = await this._services.getSongById(songId);
 
     return successResponse(h, {
       responseData: {
@@ -83,7 +84,7 @@ class SongsHandler {
       title, year, performer, genre, duration, albumId,
     } = request.payload;
 
-    await this._service.editSongById(
+    await this._services.editSongById(
       songId,
       title,
       year,
@@ -101,7 +102,7 @@ class SongsHandler {
   async deleteSongByIdHandler(request, h) {
     const { id: songId } = request.params;
 
-    await this._service.deleteSongById(songId);
+    await this._services.deleteSongById(songId);
 
     return successResponse(h, {
       responseMessage: 'Lagu berhasil dihapus',

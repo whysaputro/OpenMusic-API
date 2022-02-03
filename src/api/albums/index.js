@@ -2,10 +2,10 @@ const AlbumsHandler = require('./handler');
 const routes = require('./routes');
 
 module.exports = {
-  name: 'API For Albums',
+  name: 'API To Do CRDU Albums',
   version: '1.0.0',
-  register: async (server, { service, validator }) => {
-    const albumsHandler = new AlbumsHandler(service, validator);
+  register: async (server, { services, validator }) => {
+    const albumsHandler = new AlbumsHandler(services, validator);
     server.route(routes(albumsHandler));
   },
 };

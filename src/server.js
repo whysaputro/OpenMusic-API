@@ -92,7 +92,7 @@ const init = async () => {
     {
       plugin: albums,
       options: {
-        service: {
+        services: {
           albumsService,
           songsService,
         },
@@ -102,21 +102,21 @@ const init = async () => {
     {
       plugin: songs,
       options: {
-        service: songsService,
+        services: songsService,
         validator: SongValidator,
       },
     },
     {
       plugin: users,
       options: {
-        service: usersService,
+        services: usersService,
         validator: UserValidator,
       },
     },
     {
       plugin: authentications,
       options: {
-        service: {
+        services: {
           usersService,
           authenticationsService,
         },
