@@ -21,7 +21,7 @@ const failResponse = (h, error) => h.response({
 
 const errorResponse = (h) => h.response({
   status: 'error',
-  message: 'Terjadi kesalahan pada server',
+  message: 'Maaf, terjadi kegagalan pada server',
 }).code(500);
 
 module.exports = { successResponse, failResponse, errorResponse };
