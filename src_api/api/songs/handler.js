@@ -13,13 +13,8 @@ class SongsHandler {
   }
 
   async postSongHandler(request, h) {
-    const {
-      title, year, performer, genre, duration, albumId,
-    } = request.payload;
-
     this._validator.validateSongPayload(request.payload);
-    // eslint-disable-next-line max-len
-    const songId = await this._services.addSong(title, year, performer, genre, duration, albumId);
+    const songId = await this._services.addSong(request.payload);
 
     return successResponse(h, {
       responseData: {
@@ -32,31 +27,19 @@ class SongsHandler {
   async getSongsHandler(request, h) {
     const { title, performer } = request.query;
 
-    const songs = await this._services.getSongs(title, performer);
-
-    if (title && performer) {
-      return successResponse(h, {
-        responseData: {
-          // eslint-disable-next-line max-len
-          songs: songs.filter((el) => el.title.toLowerCase().includes(title) && el.performer.toLowerCase().includes(performer)),
-        },
-      });
-    }
+    let songs = await this._services.getSongs(title, performer);
 
     if (title) {
-      return successResponse(h, {
-        responseData: {
-          songs: songs.filter((el) => el.title.toLowerCase().includes(title)),
-        },
-      });
+      songs = songs.filter((song) => song.title.toLowerCase().includes(title));
     }
 
     if (performer) {
-      return successResponse(h, {
-        responseData: {
-          songs: songs.filter((el) => el.performer.toLowerCase().includes(performer)),
-        },
-      });
+      songs = songs.filter((song) => song.performer.toLowerCase().includes(performer));
+    }
+
+    if (title && performer) {
+      // eslint-disable-next-line max-len
+      songs = songs.filter((song) => song.title.toLowerCase().includes(title) && song.performer.toLowerCase().includes(performer));
     }
 
     return successResponse(h, {

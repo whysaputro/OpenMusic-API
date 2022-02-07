@@ -38,7 +38,6 @@ class AlbumsHandler {
     const { id: albumId } = request.params;
 
     const album = await this._albumService.getAlbumById(albumId);
-    console.log(album);
     album.songs = await this._songService.getSongByAlbumId(albumId);
 
     return successResponse(h, {
