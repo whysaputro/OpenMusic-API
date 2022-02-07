@@ -118,7 +118,10 @@ class PlaylistsHandler {
     const activities = await this._playlistSongAvtivitiesService.getActivities(playlistId);
 
     return successResponse(h, {
-      responseData: createPlaylistActivitiesObject(playlistId, activities),
+      responseData: {
+        playlistId,
+        activities,
+      },
     });
   }
 }
