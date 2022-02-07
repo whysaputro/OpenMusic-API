@@ -89,10 +89,10 @@ class AlbumsHandler {
     const { id: userId } = request.auth.credentials;
 
     await this._albumService.verifyAlbumIsExist(albumId);
-    const likeId = await this._userAlbumLikesService.giveLikeToAlbum(userId, albumId);
+    const message = await this._userAlbumLikesService.updateLikeAlbum(userId, albumId);
 
     return successResponse(h, {
-      responseMessage: likeId ? 'Album berhasil disukai' : 'Menghapus like pada album',
+      responseMessage: message,
       responseCode: 201,
     });
   }

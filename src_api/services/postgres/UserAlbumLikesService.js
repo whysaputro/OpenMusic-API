@@ -9,13 +9,15 @@ class UserAlbumLikesService {
     this._cacheService = cacheService;
   }
 
-  async giveLikeToAlbum(userId, albumId) {
-    const likeId = await this.verifyAlbumIsLikedOrNot(userId, albumId);
+  async updateLikeAlbum(userId, albumId) {
+    const liked = await this.verifyAlbumIsLikedOrNot(userId, albumId);
 
-    if (likeId) {
-      return this.removeLikeFromAlbum(likeId);
+    if (liked) {
+      await this.removeLikeFromAlbum(userId, albumId);
+      return 'Menghapus like pada album';
     }
-    return this.addLikeToAlbum(userId, albumId);
+    await this.addLikeToAlbum(userId, albumId);
+    return 'Album berhasil disukai';
   }
 
   async verifyAlbumIsLikedOrNot(userId, albumId) {
@@ -26,7 +28,7 @@ class UserAlbumLikesService {
 
     const result = await this._pool.query(query);
     if (result.rowCount) {
-      return result.rows[0].id;
+      return true;
     }
     return false;
   }
@@ -47,10 +49,10 @@ class UserAlbumLikesService {
     return result.rows[0].id;
   }
 
-  async removeLikeFromAlbum(likeId) {
+  async removeLikeFromAlbum(userId, albumId) {
     const query = {
-      text: 'DELETE FROM user_album_likes WHERE id = $1 RETURNING album_id',
-      values: [likeId],
+      text: 'DELETE FROM user_album_likes WHERE user_id = $1 AND album_id = $2 RETURNING id',
+      values: [userId, albumId],
     };
 
     const result = await this._pool.query(query);
@@ -58,7 +60,7 @@ class UserAlbumLikesService {
       throw new NotFoundError('Gagal menghapus like pada album, id tidak ditemukan');
     }
 
-    await this._cacheService.delete(`album-like:${result.rows[0].album_id}`);
+    await this._cacheService.delete(`album-like:${albumId}`);
   }
 
   async getAlbumLikesByAlbumId(albumId) {
