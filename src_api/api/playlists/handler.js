@@ -1,5 +1,4 @@
 const { successResponse } = require('../../utils/responses');
-const createPlaylistActivitiesObject = require('../../utils/model/PlaylistModel');
 
 class PlaylistsHandler {
   constructor({

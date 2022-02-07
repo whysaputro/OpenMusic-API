@@ -61,7 +61,7 @@ class UsersService {
     return id;
   }
 
-  async getUserByUserId(userId) {
+  async verifyUserAvaibility(userId) {
     const query = {
       text: 'SELECT * FROM users WHERE id = $1',
       values: [userId],
