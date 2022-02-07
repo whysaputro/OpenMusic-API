@@ -1,4 +1,3 @@
-const { string } = require('joi');
 const concatenateSongsToAlbumModel = require('../../utils/model/AlbumModel');
 const { successResponse } = require('../../utils/responses');
 
@@ -39,11 +38,12 @@ class AlbumsHandler {
     const { id: albumId } = request.params;
 
     const album = await this._albumService.getAlbumById(albumId);
-    const songs = await this._songService.getSongByAlbumId(albumId);
+    console.log(album);
+    album.songs = await this._songService.getSongByAlbumId(albumId);
 
     return successResponse(h, {
       responseData: {
-        album: concatenateSongsToAlbumModel(album, songs),
+        album,
       },
     });
   }

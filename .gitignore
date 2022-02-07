@@ -1,4 +1,6 @@
 node_modules
 .env
+.idea
 openmusic-api-v1.zip
 openmusic-api-v2.zip
+openmusic-api-v3.zip

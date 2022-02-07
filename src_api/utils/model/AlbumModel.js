@@ -1,4 +1,4 @@
 // eslint-disable-next-line camelcase,max-len
-const concatenateSongsToAlbumModel = ({ cover_url, ...album }, songs) => ({ ...album, coverUrl: cover_url, songs });
+const mapDBToAlbumModel = ({ cover_url, ...album }) => ({ ...album, coverUrl: cover_url });
 
-module.exports = concatenateSongsToAlbumModel;
+module.exports = mapDBToAlbumModel;
